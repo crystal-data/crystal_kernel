@@ -83,17 +83,17 @@ class CrystalKernel(Kernel):
         # so that crystal and its children are interruptible.
         sig = signal.signal(signal.SIGINT, signal.SIG_DFL)
         try:
+            child = pexpect.spawn("crystal", ['i'], echo=False, encoding='utf-8',
+                                  codec_errors='replace') 
             # Using IREPLWrapper to get incremental output
-            self.crystalwrapper = IREPLWrapper(child, u'\>',
-                                            extra_init_cmd="",
+            prompt=u':0> '
+            self.crystalwrapper = IREPLWrapper(child, prompt, None,
                                             line_output_callback=self.process_output)
         finally:
             signal.signal(signal.SIGINT, sig)
 
     def process_output(self, output):
         if not self.silent:
-            image_filenames, output = extract_image_filenames(output)
-
             # Send standard output
             stream_content = {'name': 'stdout', 'text': output}
             self.send_response(self.iopub_socket, 'stream', stream_content)

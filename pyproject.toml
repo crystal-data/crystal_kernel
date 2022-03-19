@@ -7,7 +7,7 @@ module = "crystal_kernel"
 author = "kojix2"
 author-email = "2xijok@gmail.com"
 home-page = "https://github.com/kojix2/crystal_kernel"
-requires = ["pexpect (>=4.0)"]
+requires = ["pexpect", "ipykernel"]
 description-file = "README.md"
 classifiers = [
     "Framework :: IPython",
