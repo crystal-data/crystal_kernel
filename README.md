@@ -2,4 +2,4 @@
 
 Python wrapper kernel for Crystal
 
-forked from bash_kernel
+Forked from [bash_kernel](https://github.com/takluyver/bash_kernel)
