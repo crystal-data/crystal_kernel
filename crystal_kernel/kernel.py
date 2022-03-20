@@ -31,7 +31,7 @@ class IREPLWrapper(replwrap.REPLWrapper):
             while True:
                 pos = self.child.expect([self.prompt, r'\r\n'],
                                         timeout=None)
-                if pos == 2:
+                if pos == 1:
                     # End of line received
                     self.line_output_callback(self.child.before + '\n')
                 else:
