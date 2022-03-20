@@ -1,3 +1,7 @@
+
+# Simple Jupyter kernel for Crystal
+# Forked from https://github.com/takluyver/bash_kernel
+
 from ipykernel.kernelbase import Kernel
 from pexpect import replwrap, EOF
 import pexpect
@@ -29,6 +33,8 @@ class IREPLWrapper(replwrap.REPLWrapper):
             # "None" means we are executing code from a Jupyter cell by way of the run_command
             # in the do_execute() code below, so do incremental output.
             while True:
+                # Use expect instead of expect_expect
+                # because the crystal interpreter prompt includes line numbers.
                 pos = self.child.expect([self.prompt, r'\r\n'],
                                         timeout=None)
                 if pos == 1:
@@ -41,6 +47,8 @@ class IREPLWrapper(replwrap.REPLWrapper):
                     break
         else:
             # Otherwise, use existing non-incremental code
+            # Use expect instead of expect_expect
+            # because the crystal interpreter prompt includes line numbers.
             pos = self.child.expect([self.prompt], timeout=timeout)
 
         # Prompt received, so return normally
