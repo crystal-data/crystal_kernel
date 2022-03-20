@@ -6,7 +6,7 @@ Forked from [bash_kernel](https://github.com/takluyver/bash_kernel)
 
 ## installation
 
-Make sure the interpreter starts with `crystal i`. 
+Make sure the [Crystal's interpreter](https://crystal-lang.org/2021/12/29/crystal-i.html) starts with `crystal i`. 
 
 Then type the following commands.
 
