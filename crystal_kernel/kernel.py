@@ -12,20 +12,25 @@ __version__ = '0.0.1'
 
 version_pat = re.compile(r'version (\d+(\.\d+)+)')
 
+
 class IREPLWrapper(replwrap.REPLWrapper):
     def __init__(self, cmd_or_spawn, orig_prompt, prompt_change,
                  extra_init_cmd=None, line_output_callback=None):
         self.line_output_callback = line_output_callback
-        replwrap.REPLWrapper.__init__(self, cmd_or_spawn, orig_prompt,
-                                      prompt_change, extra_init_cmd=extra_init_cmd)
+        replwrap.REPLWrapper.__init__(
+            self,
+            cmd_or_spawn,
+            orig_prompt,
+            prompt_change,
+            extra_init_cmd=extra_init_cmd)
 
     def _expect_prompt(self, timeout=-1):
-        if timeout == None:
+        if timeout is None:
             # "None" means we are executing code from a Jupyter cell by way of the run_command
             # in the do_execute() code below, so do incremental output.
             while True:
                 pos = self.child.expect([self.prompt, r'\r\n'],
-                                              timeout=None)
+                                        timeout=None)
                 if pos == 2:
                     # End of line received
                     self.line_output_callback(self.child.before + '\n')
@@ -41,6 +46,7 @@ class IREPLWrapper(replwrap.REPLWrapper):
         # Prompt received, so return normally
         return pos
 
+
 class CrystalKernel(Kernel):
     implementation = 'crystal_kernel'
     implementation_version = __version__
@@ -55,7 +61,8 @@ class CrystalKernel(Kernel):
     @property
     def banner(self):
         if self._banner is None:
-            self._banner = check_output(['crystal', '--version']).decode('utf-8')
+            self._banner = check_output(
+                ['crystal', '--version']).decode('utf-8')
         return self._banner
 
     language_info = {'name': 'crystal',
@@ -74,12 +81,16 @@ class CrystalKernel(Kernel):
         # so that crystal and its children are interruptible.
         sig = signal.signal(signal.SIGINT, signal.SIG_DFL)
         try:
-            child = pexpect.spawn("crystal", ['i'], echo=False, encoding='utf-8',
-                                  codec_errors='replace') 
+            child = pexpect.spawn(
+                "crystal",
+                ['i'],
+                echo=False,
+                encoding='utf-8',
+                codec_errors='replace')
             # Using IREPLWrapper to get incremental output
-            prompt_regexp=r'icr:\d+:\d+> '
-            self.crystalwrapper = IREPLWrapper(child, prompt_regexp, None,
-                                               line_output_callback=self.process_output)
+            prompt_regexp = r'icr:\d+:\d+> '
+            self.crystalwrapper = IREPLWrapper(
+                child, prompt_regexp, None, line_output_callback=self.process_output)
         finally:
             signal.signal(signal.SIGINT, sig)
 
@@ -88,7 +99,6 @@ class CrystalKernel(Kernel):
             # Send standard output
             stream_content = {'name': 'stdout', 'text': output}
             self.send_response(self.iopub_socket, 'stream', stream_content)
-
 
     def do_execute(self, code, silent, store_history=True,
                    user_expressions=None, allow_stdin=False):
@@ -111,30 +121,11 @@ class CrystalKernel(Kernel):
             output = self.crystalwrapper.child.before
             self.process_output(output)
         except EOF:
-            output = self.crystalwrapper.child.before + 'Restarting Crystal'
-            self._start_crystal()
+            output = self.crystalwrapper.child.before
             self.process_output(output)
 
         if interrupted:
             return {'status': 'abort', 'execution_count': self.execution_count}
 
-        try:
-            exitcode = int(self.crystalwrapper.run_command('echo $?').rstrip())
-        except Exception:
-            exitcode = 1
-
-        if exitcode:
-            error_content = {
-                'ename': '',
-                'evalue': str(exitcode),
-                'traceback': []
-            }
-            self.send_response(self.iopub_socket, 'error', error_content)
-
-            error_content['execution_count'] = self.execution_count
-            error_content['status'] = 'error'
-            return error_content
-        else:
-            return {'status': 'ok', 'execution_count': self.execution_count,
-                    'payload': [], 'user_expressions': {}}
-
+        return {'status': 'ok', 'execution_count': self.execution_count,
+                'payload': [], 'user_expressions': {}}
