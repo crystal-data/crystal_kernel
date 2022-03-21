@@ -33,7 +33,7 @@ class IREPLWrapper(replwrap.REPLWrapper):
             # "None" means we are executing code from a Jupyter cell by way of the run_command
             # in the do_execute() code below, so do incremental output.
             while True:
-                # Use expect instead of expect_expect
+                # Use expect(pattern) instead of expect_expect(string)
                 # because the crystal interpreter prompt includes line numbers.
                 pos = self.child.expect([self.prompt, r'\r\n'],
                                         timeout=None)
@@ -47,7 +47,7 @@ class IREPLWrapper(replwrap.REPLWrapper):
                     break
         else:
             # Otherwise, use existing non-incremental code
-            # Use expect instead of expect_expect
+            # Use expect(pattern) instead of expect_expect(string)
             # because the crystal interpreter prompt includes line numbers.
             pos = self.child.expect([self.prompt], timeout=timeout)
 
@@ -95,8 +95,10 @@ class CrystalKernel(Kernel):
                 echo=False,
                 encoding='utf-8',
                 codec_errors='replace')
+            # Pattern should be used to avoid line numbers.
+            # See (#1) for [>\*].
+            prompt_regexp = r'^icr:\d+:\d+[>\*] '
             # Using IREPLWrapper to get incremental output
-            prompt_regexp = r'icr:\d+:\d+> '
             self.crystalwrapper = IREPLWrapper(
                 child, prompt_regexp, None, line_output_callback=self.process_output)
         finally:
