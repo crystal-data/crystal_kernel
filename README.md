@@ -1,8 +1,11 @@
 # crystal_kernel
 
+<img alt="Crystal" src="https://crystal-lang.org/assets/media/crystal_logo.svg" height="100"></img>
+<img alt="Jupyter" src="https://docs.jupyter.org/en/latest/_static/jupyter.svg" height="50"></img>
+
 [![PyPI Version](https://img.shields.io/pypi/v/crystal-kernel.svg)](https://pypi.org/project/crystal-kernel/)
 
-Python wrapper kernel for Crystal
+[Python wrapper kernel](https://jupyter-client.readthedocs.io/en/stable/wrapperkernels.html) for Crystal language.
 
 Forked from [bash_kernel](https://github.com/takluyver/bash_kernel)
 
@@ -25,4 +28,5 @@ Something is better than nothing.
 
 ## Link
 
-* [ICrystal](https://github.com/RomainFranceschini/icrystal) - 
+* [ICrystal](https://github.com/RomainFranceschini/icrystal)
+
