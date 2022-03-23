@@ -19,7 +19,7 @@ Make sure the [Crystal's interpreter](https://crystal-lang.org/2021/12/29/crysta
 Then type the following commands.
 
 ```
-pip install crystal-kernel
+pip install crystal_kernel
 
 python -m crystal_kernel.install
 ```
