@@ -21,8 +21,7 @@ Then type the following commands.
 ```
 pip install crystal-kernel
 
-git clone https://github.com/kojix2/crystal_kernel
-python crystal_kernel/install.py
+python -m crystal_kernel.install
 ```
 
 ## Development
