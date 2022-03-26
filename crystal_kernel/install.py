@@ -8,9 +8,7 @@ from IPython.utils.tempdir import TemporaryDirectory
 
 kernel_json = {"argv":[sys.executable,"-m","crystal_kernel", "-f", "{connection_file}"],
  "display_name":"Crystal",
- "language":"crystal",
- "codemirror_mode":"shell",
- "env":{"PS1": "$"}
+ "language":"crystal"
 }
 
 def install_my_kernel_spec(user=True, prefix=None):
