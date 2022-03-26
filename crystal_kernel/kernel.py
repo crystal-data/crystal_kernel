@@ -79,7 +79,6 @@ class CrystalKernel(Kernel):
 
     language_info = {
         "name": "crystal",
-        "codemirror_mode": "shell",
         "mimetype": "text/x-crystal",
         "file_extension": ".cr",
     }
