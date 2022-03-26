@@ -1,4 +1,3 @@
-
 # Simple Jupyter kernel for Crystal
 # Forked from https://github.com/takluyver/bash_kernel
 
@@ -12,21 +11,28 @@ import os.path
 import re
 import signal
 
-__version__ = '0.0.2'
+__version__ = "0.0.2"
 
-version_pat = re.compile(r'version (\d+(\.\d+)+)')
+version_pat = re.compile(r"version (\d+(\.\d+)+)")
 
 
 class IREPLWrapper(replwrap.REPLWrapper):
-    def __init__(self, cmd_or_spawn, orig_prompt, prompt_change,
-                 extra_init_cmd=None, line_output_callback=None):
+    def __init__(
+        self,
+        cmd_or_spawn,
+        orig_prompt,
+        prompt_change,
+        extra_init_cmd=None,
+        line_output_callback=None,
+    ):
         self.line_output_callback = line_output_callback
         replwrap.REPLWrapper.__init__(
             self,
             cmd_or_spawn,
             orig_prompt,
             prompt_change,
-            extra_init_cmd=extra_init_cmd)
+            extra_init_cmd=extra_init_cmd,
+        )
 
     def _expect_prompt(self, timeout=-1):
         if timeout is None:
@@ -35,11 +41,10 @@ class IREPLWrapper(replwrap.REPLWrapper):
             while True:
                 # Use expect(pattern) instead of expect_expect(string)
                 # because the crystal interpreter prompt includes line numbers.
-                pos = self.child.expect([self.prompt, r'\r\n'],
-                                        timeout=None)
+                pos = self.child.expect([self.prompt, r"\r\n"], timeout=None)
                 if pos == 1:
                     # End of line received
-                    self.line_output_callback(self.child.before + '\n')
+                    self.line_output_callback(self.child.before + "\n")
                 else:
                     if len(self.child.before) != 0:
                         # prompt received, but partial line precedes it
@@ -56,7 +61,7 @@ class IREPLWrapper(replwrap.REPLWrapper):
 
 
 class CrystalKernel(Kernel):
-    implementation = 'crystal_kernel'
+    implementation = "crystal_kernel"
     implementation_version = __version__
 
     @property
@@ -69,14 +74,15 @@ class CrystalKernel(Kernel):
     @property
     def banner(self):
         if self._banner is None:
-            self._banner = check_output(
-                ['crystal', '--version']).decode('utf-8')
+            self._banner = check_output(["crystal", "--version"]).decode("utf-8")
         return self._banner
 
-    language_info = {'name': 'crystal',
-                     'codemirror_mode': 'shell',
-                     'mimetype': 'text/x-crystal',
-                     'file_extension': '.cr'}
+    language_info = {
+        "name": "crystal",
+        "codemirror_mode": "shell",
+        "mimetype": "text/x-crystal",
+        "file_extension": ".cr",
+    }
 
     def __init__(self, **kwargs):
         Kernel.__init__(self, **kwargs)
@@ -90,32 +96,35 @@ class CrystalKernel(Kernel):
         sig = signal.signal(signal.SIGINT, signal.SIG_DFL)
         try:
             child = pexpect.spawn(
-                "crystal",
-                ['i'],
-                echo=False,
-                encoding='utf-8',
-                codec_errors='replace')
+                "crystal", ["i"], echo=False, encoding="utf-8", codec_errors="replace"
+            )
             # Pattern should be used to avoid line numbers.
             # See (#1) for [>\*].
-            prompt_regexp = r'^icr:\d+:\d+[>\*] '
+            prompt_regexp = r"^icr:\d+:\d+[>\*] "
             # Using IREPLWrapper to get incremental output
             self.crystalwrapper = IREPLWrapper(
-                child, prompt_regexp, None, line_output_callback=self.process_output)
+                child, prompt_regexp, None, line_output_callback=self.process_output
+            )
         finally:
             signal.signal(signal.SIGINT, sig)
 
     def process_output(self, output):
         if not self.silent:
             # Send standard output
-            stream_content = {'name': 'stdout', 'text': output}
-            self.send_response(self.iopub_socket, 'stream', stream_content)
+            stream_content = {"name": "stdout", "text": output}
+            self.send_response(self.iopub_socket, "stream", stream_content)
 
-    def do_execute(self, code, silent, store_history=True,
-                   user_expressions=None, allow_stdin=False):
+    def do_execute(
+        self, code, silent, store_history=True, user_expressions=None, allow_stdin=False
+    ):
         self.silent = silent
         if not code.strip():
-            return {'status': 'ok', 'execution_count': self.execution_count,
-                    'payload': [], 'user_expressions': {}}
+            return {
+                "status": "ok",
+                "execution_count": self.execution_count,
+                "payload": [],
+                "user_expressions": {},
+            }
 
         interrupted = False
         try:
@@ -135,7 +144,11 @@ class CrystalKernel(Kernel):
             self.process_output(output)
 
         if interrupted:
-            return {'status': 'abort', 'execution_count': self.execution_count}
+            return {"status": "abort", "execution_count": self.execution_count}
 
-        return {'status': 'ok', 'execution_count': self.execution_count,
-                'payload': [], 'user_expressions': {}}
+        return {
+            "status": "ok",
+            "execution_count": self.execution_count,
+            "payload": [],
+            "user_expressions": {},
+        }
