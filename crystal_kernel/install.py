@@ -2,13 +2,16 @@ import json
 import os
 import sys
 import argparse
+from shutil import copyfile
+from .resources import _resourcesRoot
 
 from jupyter_client.kernelspec import KernelSpecManager
 from IPython.utils.tempdir import TemporaryDirectory
 
-kernel_json = {"argv":[sys.executable,"-m","crystal_kernel", "-f", "{connection_file}"],
- "display_name":"Crystal",
- "language":"crystal"
+kernel_json = {"argv": [sys.executable,
+                        "-m","crystal_kernel", "-f", "{connection_file}"],
+ "display_name": "Crystal",
+ "language": "crystal"
 }
 
 def install_my_kernel_spec(user=True, prefix=None):
@@ -16,7 +19,10 @@ def install_my_kernel_spec(user=True, prefix=None):
         os.chmod(td, 0o755) # Starts off as 700, not user readable
         with open(os.path.join(td, 'kernel.json'), 'w') as f:
             json.dump(kernel_json, f, sort_keys=True)
-        # TODO: Copy resources once they're specified
+        copyfile(os.path.join(_resourcesRoot, 'logo-32x32.png'),
+                 os.path.join(td, 'logo-32x32.png'))
+        copyfile(os.path.join(_resourcesRoot, 'logo-64x64.png'),
+                 os.path.join(td, 'logo-64x64.png'))
 
         print('Installing IPython kernel spec')
         KernelSpecManager().install_kernel_spec(td, 'crystal', user=user, prefix=prefix)
