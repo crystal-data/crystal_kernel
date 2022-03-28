@@ -1,9 +1,10 @@
 # crystal_kernel
 
-<img alt="Crystal" src="https://crystal-lang.org/assets/media/crystal_logo.svg" height="100"></img>
-<img alt="Jupyter" src="https://docs.jupyter.org/en/latest/_static/jupyter.svg" height="50"></img>
+<a href="https://crystal-lang.org/"><img alt="Crystal" src="https://crystal-lang.org/assets/media/crystal_logo.svg" height="100"></img></a>
+<a href="https://jupyter.org/"><img alt="Jupyter" src="https://docs.jupyter.org/en/latest/_static/jupyter.svg" height="50"></img></a>
 
 [![PyPI Version](https://img.shields.io/pypi/v/crystal-kernel.svg)](https://pypi.org/project/crystal-kernel/)
+[![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 Simple [Python wrapper kernel](https://jupyter-client.readthedocs.io/en/stable/wrapperkernels.html) for Crystal language.
 [ICrystal](https://github.com/RomainFranceschini/icrystal) is the widely used Jupyter kernel for Crystal, 
@@ -35,7 +36,7 @@ git clone https://github.com/crystal-lang/crystal
 cd crystal
 make help                               # check available options
 make interpreter=1 release=1 progress=1 # whatever you want
-sudo make install                       # sudo checkinstall (I am a fan of checkinstall)
+sudo make install                       # sudo checkinstall
 ```
 
 Then check the interpreter start.
