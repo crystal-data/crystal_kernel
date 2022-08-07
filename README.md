@@ -1,7 +1,6 @@
 # crystal_kernel
 
-<a href="https://crystal-lang.org/"><img alt="Crystal" src="https://crystal-lang.org/assets/media/crystal_logo.svg" height="100"></img></a>
-<a href="https://jupyter.org/"><img alt="Jupyter" src="https://docs.jupyter.org/en/latest/_static/jupyter.svg" height="50"></img></a>
+<p align="center"><img src="https://user-images.githubusercontent.com/5798442/183279700-0f61d484-9460-4802-9c1b-5e6b07b5e1a5.png"></p>
 
 [![PyPI Version](https://img.shields.io/pypi/v/crystal-kernel.svg)](https://pypi.org/project/crystal-kernel/)
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
