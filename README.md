@@ -54,4 +54,5 @@ Use shards when you want to use crystal libraries. Go to your working directory 
 
 * See [Python wrapper kernel](https://jupyter-client.readthedocs.io/en/stable/wrapperkernels.html).
 * Something is better than nothing.
-* We are looking for a committer. 
+
+Feel free to fork this project and start your own project. The author (kojix2) is not familiar with Python and is ready to transfer this project to a more suitable person. If you are interested in taking over the project, please let us know.
