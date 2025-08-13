@@ -6,15 +6,15 @@
 [![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 Simple [Python wrapper kernel](https://jupyter-client.readthedocs.io/en/stable/wrapperkernels.html) for Crystal language.
-[ICrystal](https://github.com/RomainFranceschini/icrystal) is the widely used Jupyter kernel for Crystal, 
-which uses [ICR](https://github.com/crystal-community/icr). 
+[ICrystal](https://github.com/RomainFranceschini/icrystal) is the widely used Jupyter kernel for Crystal,
+which uses [ICR](https://github.com/crystal-community/icr).
 On the other hand, this crystal_kernel uses the official [Crystal interpreter](https://crystal-lang.org/2021/12/29/crystal-i.html).
 
 Forked from [bash_kernel](https://github.com/takluyver/bash_kernel)
 
 ## Installation
 
-Make sure the [Crystal's interpreter](https://crystal-lang.org/2021/12/29/crystal-i.html) starts with `crystal i`. 
+Make sure the [Crystal's interpreter](https://crystal-lang.org/2021/12/29/crystal-i.html) starts with `crystal i`.
 
 Then type the following commands.
 
@@ -26,7 +26,7 @@ python -m crystal_kernel.install
 
 ## Compiling Crystal interpreter
 
-Crystal 1.3.2 does not provide the Crystal interpreter by default. 
+Crystal 1.3.2 does not provide the Crystal interpreter by default.
 
 To enable `crystal i`, you need to [compile Crystal from source code](https://crystal-lang.org/install/from_sources/) with `interpreter` option. Crystal is required to compile Crystal. So please do not remove the existing Crystal just because you are going to install Crystal from source code.
 
@@ -52,7 +52,38 @@ Use shards when you want to use crystal libraries. Go to your working directory 
 
 ## Development
 
-* See [Python wrapper kernel](https://jupyter-client.readthedocs.io/en/stable/wrapperkernels.html).
-* Something is better than nothing.
+Clone the repository:
+
+```sh
+git clone https://github.com/crystal-data/crystal_kernel
+cd crystal_kernel
+```
+
+Install in development mode:
+
+```sh
+pip install flit
+flit install --symlink
+```
+
+Install the kernel spec:
+
+```sh
+python -m crystal_kernel.install
+```
+
+Build the package:
+
+```sh
+flit build
+```
+
+Publish to PyPI:
+
+```sh
+flit publish
+```
+
+See [Python wrapper kernel](https://jupyter-client.readthedocs.io/en/stable/wrapperkernels.html) for more information.
 
 Feel free to fork this project and start your own project. The author (kojix2) is not familiar with Python and is ready to transfer this project to a more suitable person. If you are interested in taking over the project, please let us know.
