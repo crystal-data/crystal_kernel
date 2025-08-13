@@ -11,7 +11,7 @@ import os.path
 import re
 import signal
 
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 
 version_pat = re.compile(r"version (\d+(\.\d+)+)")
 
@@ -43,11 +43,13 @@ class IREPLWrapper(replwrap.REPLWrapper):
                 # because the crystal interpreter prompt includes line numbers.
                 pos = self.child.expect([self.prompt, r"\r\n"], timeout=None)
                 if pos == 1:
-                    # End of line received
-                    self.line_output_callback(self.child.before + "\n")
+                    # End of line received - send output immediately
+                    if self.line_output_callback and len(self.child.before) > 0:
+                        self.line_output_callback(self.child.before + "\n")
                 else:
-                    if len(self.child.before) != 0:
-                        # prompt received, but partial line precedes it
+                    # Prompt received
+                    if self.line_output_callback and len(self.child.before) > 0:
+                        # Send any remaining output before the prompt
                         self.line_output_callback(self.child.before)
                     break
         else:
@@ -94,16 +96,34 @@ class CrystalKernel(Kernel):
         # so that crystal and its children are interruptible.
         sig = signal.signal(signal.SIGINT, signal.SIG_DFL)
         try:
+            # Check if crystal interpreter is available
+            try:
+                check_output(["crystal", "--version"])
+            except FileNotFoundError:
+                raise RuntimeError("Crystal interpreter not found. Please install Crystal language.")
+            
+            # Set environment variables for better programmatic interaction
+            import os
+            env = os.environ.copy()
+            env['CRYSTAL_INTERPRETER_SKIP_BANNER'] = '1'
+            
             child = pexpect.spawn(
-                "crystal", ["i"], echo=False, encoding="utf-8", codec_errors="replace"
+                "crystal", ["i", "--no-color"], 
+                echo=False, 
+                encoding="utf-8", 
+                codec_errors="replace",
+                env=env
             )
             # Pattern should be used to avoid line numbers.
             # See (#1) for [>\*].
-            prompt_regexp = r"^icr:\d+:\d+[>\*] "
+            prompt_regexp = r"icr:\d+> "
             # Using IREPLWrapper to get incremental output
             self.crystalwrapper = IREPLWrapper(
                 child, prompt_regexp, None, line_output_callback=self.process_output
             )
+        except Exception as e:
+            self.log.error(f"Failed to start Crystal interpreter: {e}")
+            raise
         finally:
             signal.signal(signal.SIGINT, sig)
 
